@@ -99,19 +99,20 @@ export const config = {
   // Until you add your own, beautiful Unsplash placeholders are used.
   photos: [
     {
-      src: "https://images.unsplash.com/photo-1519741497674-611481863552?w=1600&q=80",
+    	src: "/photos/holding_hands.jpeg",
+      //src: "https://images.unsplash.com/photo-1519741497674-611481863552?w=1600&q=80",
       alt: "Couple holding hands",
       quote: "In a sea of faces, my heart will always find yours.",
       author: "— Where it all began",
     },
     {
-      src: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1600&q=80",
+      src: "/photos/smile_closeup.jpeg",
       alt: "Wedding rings",
       quote: "And just like that, every love song made sense.",
       author: "— A promise made",
     },
     {
-      src: "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=1600&q=80",
+      src: "/photos/eile.jpeg",
       alt: "Bride and groom dancing",
       quote: "Two hearts, one story — and a forever just beginning.",
       author: "— Together, always",
