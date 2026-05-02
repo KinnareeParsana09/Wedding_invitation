@@ -1,5 +1,4 @@
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { motion } from "framer-motion";
 import config from "../config";
 
 // Resolve a photo URL so it works in dev, on a subpath GitHub Pages deploy,
@@ -12,39 +11,32 @@ function resolveSrc(src) {
   if (/^(https?:)?\/\//i.test(src) || src.startsWith("data:")) return src;
   const base = (import.meta.env.BASE_URL || "/").replace(/\/$/, "/");
   const cleaned = src.replace(/^\/+/, "");
-  console.info("DAP")
-  console.info(base)
-  console.info(cleaned)
   return base + cleaned;
 }
 
 function PhotoBlock({ photo, flip, index }) {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-  // Subtle parallax — wrapped on a div, NOT the img itself,
-  // so the image is free to fill the frame at all times.
-  const y = useTransform(scrollYProgress, [0, 1], [30, -30]);
+  // Orientation hints (config-driven):
+  //   photo.orientation: "portrait" (default) | "landscape" | "square"
+  //   photo.fit:         "cover" (default) | "contain"
+  const orientation = photo.orientation || "portrait";
+  const fit = photo.fit || (orientation === "landscape" ? "contain" : "cover");
+  const frameClass = `photo-frame photo-${orientation} photo-fit-${fit}`;
 
   return (
-    <div className={`photo-block ${flip ? "flip" : ""}`} ref={ref}>
+    <div className={`photo-block ${flip ? "flip" : ""}`}>
       <motion.div
-        className="photo-frame"
-        initial={{ opacity: 0, y: 60 }}
+        className={frameClass}
+        initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.25 }}
-        transition={{ duration: 1 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.9, ease: "easeOut" }}
       >
-        <motion.div className="photo-frame-inner" style={{ y }}>
-          <img
-            src={resolveSrc(photo.src)}
-            alt={photo.alt || `Memory ${index + 1}`}
-            loading="lazy"
-            referrerPolicy="no-referrer"
-          />
-        </motion.div>
+        <img
+          src={resolveSrc(photo.src)}
+          alt={photo.alt || `Memory ${index + 1}`}
+          loading="lazy"
+          referrerPolicy="no-referrer"
+        />
       </motion.div>
 
       <div>
@@ -52,8 +44,8 @@ function PhotoBlock({ photo, flip, index }) {
           className="photo-quote"
           initial={{ opacity: 0, x: flip ? -40 : 40 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 1, delay: 0.15 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.9, delay: 0.15, ease: "easeOut" }}
         >
           &ldquo;{photo.quote}&rdquo;
         </motion.blockquote>
@@ -62,8 +54,8 @@ function PhotoBlock({ photo, flip, index }) {
             className="photo-author"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 1, delay: 0.4 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.9, delay: 0.35 }}
           >
             {photo.author}
           </motion.div>
