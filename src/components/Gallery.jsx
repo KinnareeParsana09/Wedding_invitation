@@ -2,15 +2,28 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import config from "../config";
 
+// Resolve a photo URL so it works in dev, on a subpath GitHub Pages deploy,
+// and with absolute https:// URLs alike.
+//   - "https://..."        → returned as-is
+//   - "/photos/foo.jpg"    → "<BASE_URL>photos/foo.jpg"
+//   - "photos/foo.jpg"     → "<BASE_URL>photos/foo.jpg"
+function resolveSrc(src) {
+  if (!src) return src;
+  if (/^(https?:)?\/\//i.test(src) || src.startsWith("data:")) return src;
+  const base = (import.meta.env.BASE_URL || "/").replace(/\/$/, "/");
+  const cleaned = src.replace(/^\/+/, "");
+  return base + cleaned;
+}
+
 function PhotoBlock({ photo, flip, index }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],
   });
-  // Subtle parallax — image floats slightly slower than scroll
-  const y = useTransform(scrollYProgress, [0, 1], [40, -40]);
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1.05, 1, 1.05]);
+  // Subtle parallax — wrapped on a div, NOT the img itself,
+  // so the image is free to fill the frame at all times.
+  const y = useTransform(scrollYProgress, [0, 1], [30, -30]);
 
   return (
     <div className={`photo-block ${flip ? "flip" : ""}`} ref={ref}>
@@ -21,12 +34,14 @@ function PhotoBlock({ photo, flip, index }) {
         viewport={{ once: true, amount: 0.25 }}
         transition={{ duration: 1 }}
       >
-        <motion.img
-          src={photo.src}
-          alt={photo.alt || `Memory ${index + 1}`}
-          loading="lazy"
-          style={{ y, scale }}
-        />
+        <motion.div className="photo-frame-inner" style={{ y }}>
+          <img
+            src={resolveSrc(photo.src)}
+            alt={photo.alt || `Memory ${index + 1}`}
+            loading="lazy"
+            referrerPolicy="no-referrer"
+          />
+        </motion.div>
       </motion.div>
 
       <div>
