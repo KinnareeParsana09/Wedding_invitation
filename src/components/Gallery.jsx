@@ -12,9 +12,9 @@ function resolveSrc(src) {
   if (/^(https?:)?\/\//i.test(src) || src.startsWith("data:")) return src;
   const base = (import.meta.env.BASE_URL || "/").replace(/\/$/, "/");
   const cleaned = src.replace(/^\/+/, "");
-  console.log("DAP")
-  console.log(base)
-  console.log(cleaned)
+  console.info("DAP")
+  console.info(base)
+  console.info(cleaned)
   return base + cleaned;
 }
 

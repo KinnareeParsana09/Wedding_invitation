@@ -99,7 +99,7 @@ export const config = {
   // Until you add your own, beautiful Unsplash placeholders are used.
   photos: [
     {
-    	src: "photos/holding_hands.jpeg",
+    	src: "Wedding_invitation/photos/holding_hands.jpeg",
       //src: "https://images.unsplash.com/photo-1519741497674-611481863552?w=1600&q=80",
       alt: "Couple holding hands",
       quote: "In a sea of faces, my heart will always find yours.",
